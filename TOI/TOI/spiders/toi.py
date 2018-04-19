@@ -22,14 +22,14 @@ class ToiSpider(scrapy.Spider):
 	def start_requests(self):
 		
 		min_date = datetime.datetime.strptime('1/1/2001', '%d/%m/%Y')
-		prev_day = (date.today()-timedelta(2)).strftime('%d/%m/%Y')
-		max_date = datetime.datetime.strptime(prev_day, '%d/%m/%Y')
+		max_day = (date.today()).strftime('%d/%m/%Y')
+		max_date = datetime.datetime.strptime(max_day, '%d/%m/%Y')
 		
 		while True:
 			try:
 				start_date = datetime.datetime.strptime(input('Enter start date (dd/mm/yyyy): '), '%d/%m/%Y')
 				if (start_date < min_date or start_date > max_date):
-					print('Enter the date between '+ min_date.date().strftime('%d/%m/%Y') + ' to ' + max_date.date().strftime('%d/%m/%Y') + '.')
+					print('Enter the date between '+ min_date.date().strftime('%d/%m/%Y') + ' to ' + max_date.date().strftime('%d/%m/%Y') + ' (today).')
 					continue
 				else:
 					break
@@ -40,7 +40,7 @@ class ToiSpider(scrapy.Spider):
 			try:
 				end_date = datetime.datetime.strptime(input('Enter end date (dd/mm/yyyy): '), '%d/%m/%Y')
 				if (end_date < min_date or end_date > max_date):
-					print('Enter the date between '+ min_date.date().strftime('%d/%m/%Y') + ' to ' + max_date.date().strftime('%d/%m/%Y') + '.')
+					print('Enter the date between '+ min_date.date().strftime('%d/%m/%Y') + ' to ' + max_date.date().strftime('%d/%m/%Y') + ' (today).')
 				elif ( end_date < start_date):
 					print("End date can't be less than start date")
 					continue				
@@ -49,10 +49,15 @@ class ToiSpider(scrapy.Spider):
 			except ValueError:
 				print('Invalid Date')
 			
+		# start variable to store the starting date of archive page, later used for storing startime-number.cms
 		start = pd.datetime(2001,1,1).date()
-		end = (date.today()-timedelta(2))
+		end = date.today()
+
 		# period = int((end-start).days)
+		# Total number of days from 1/1/2001 till today.
 		N = int((end-start).days+1)
+
+		# Dataframe to store the startime of each date of size N
 		data = pd.DataFrame({'A': range(36892, 36892+N)}, index=pd.date_range(start=start, end=end, freq='D'))
 		
 		start_date = start_date.strftime('%Y-%m-%d')
